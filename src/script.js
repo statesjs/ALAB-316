@@ -4,13 +4,14 @@ let pass = document.getElementById("password");
 let formEl = document.getElementById("registration");
 let errorBox = document.getElementById("errorDisplay");
 let passCheck = document.getElementById("passwordCheck");
+let tnc = document.getElementById("checkbox");
+//
 formEl.addEventListener("submit", (e) => {
   let messages = []; // to collect and push to errorbox
   const USER = usernameEl.value.trim(); //
   const EMAIL = emailEl.value.trim(); // email to string
-  const PASS = passwordEl.value.trim(); //password
+  const PASS = pass.value.trim(); //password
   const PASSCHECK = passCheck.value.trim(); //password check
-
   //user name section
   if (USER === "") {
     messages.push("Username is required.");
@@ -31,7 +32,7 @@ formEl.addEventListener("submit", (e) => {
   if (EMAIL === "") {
     messages.push("Email is empty.");
   } else {
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(email)) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(EMAIL)) {
       messages.push("Email is not a valid address");
     }
     // Ensure email is NOT from "example.com"
@@ -41,39 +42,43 @@ formEl.addEventListener("submit", (e) => {
   }
 
   if (PASS === "") {
-    messages.push("Password is empty");
+    messages.push("Password is required.");
   } else {
-    if (PASS.length <= 12) {
-      //12 characters at least
+    if (PASS.length < 12) {
       messages.push("Password must be at least 12 characters long.");
     }
-    //one upper one lower
-    else if (/[A-Z]/.test(PASS) && /[a-z]/.test(PASS)) {
-      //lower and uppercase
+    if (!/[A-Z]/.test(PASS) || !/[a-z]/.test(PASS)) {
       messages.push(
-        "Password must contain at least one uppercase and one lowercase character."
+        "Password must contain at least one uppercase and one lowercase letter."
       );
-    } else if (/[0-9]/.test(PASS)) {
-      // one number needed
-      messages.push("Password requires at least one number.");
-    } else if (!/[^a-zA-Z0-9]/.test(PASS)) {
-      //special character test
-      messages.push("Password cannot contain special characters.");
-    } else if (PASS.toLowerCase().includes("password")) {
-      //password cannot contain password, wtf does "mixed" mean?
-      messages.push('Password cannot contain "password"');
-    } else if (PASS.toLowerCase().includes(USER.toLowerCase)) {
-      messages.push("Password cannot include the username.");
-    } else if (PASS !== PASSCHECK) {
+    }
+    if (!/[0-9]/.test(PASS)) {
+      messages.push("Password must contain at least one number.");
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(PASS)) {
+      messages.push("Password must contain at least one special character.");
+    }
+    if (PASS.toLowerCase().includes("password")) {
+      messages.push('Password cannot contain the word "password".');
+    }
+    if (PASS.toLowerCase().includes(USER.toLowerCase())) {
+      messages.push("Password cannot contain the username.");
+    }
+    if (PASS !== PASSCHECK) {
       messages.push("Passwords do not match.");
     }
   }
 
-  //display box
+  //tnc checked
+  if (!tnc.checked) {
+    messages.push("You must accept the Terms & Conditions.");
+  }
+
+  //error box display that fires if at least one error message caught
   if (messages.length > 0) {
     e.preventDefault();
-    errorBox.innerHTML = messages.join("<br>"); // errors display stacked
-    errorBox.style.display = "flex"; // changes the display on the error box to show
+    errorBox.innerHTML = messages.join("<br>"); // Show errors
+    errorBox.style.display = "flex"; // Display error box
   } else {
     errorBox.style.display = "none";
   }
