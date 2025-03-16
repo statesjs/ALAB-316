@@ -1,0 +1,87 @@
+literal look up /sometext/
+regex is case sensitive
+
+flags:
+g - (global) looks for all matching text thru the string
+i - (case INSENSITIVE)
+gm - multiline 
+
+special characters:
+
+1. + - matches at least one instance, or multiple if they exist
+
+2. ? - optional match 
+ex. ea? will match "e" and "ea"
+
+3. * - optional match as well, but takes in as many as available
+ex. ea* will match e , ea , eaa , eaaaaaaaaaa
+
+4. . - matches anything, its universal, accounts for one character 
+
+5. \ - helps search for special characters
+ex. \?
+
+6. \w - matches words
+
+7. \W - matches anything that isnt a letter(includes symbols)
+
+8. \s - matches white space
+
+9. \S - matches anything that isnt a whitespace
+
+//CURLY BRACES {}
+
+{num} - gets words that are a set length
+ex. {2} hi, yo, no
+
+{num,} - gets words that match length, or higher
+ex. {3,} matches idea, ide, hello
+
+{num1,num2} - matches unbroken characters that are between 
+the length of num1 and num2
+
+//character groupings
+
+[] : CASE SENSITIVE
+
+- strictly matches any single character inside 
+ex. [fc]at matches fat, cat
+
+
+-  does ranges of numbers [0-9] and letters [a-z]
+ex. [0-3]0 matches 20, 10, 00
+ex. matches [a-b]at aat, bat
+NOTE: CASE SENSITIVE 
+if you want any letter at upper/lowercase it's:
+[a-zA-Z]🚧
+
+//GROUPING/SEPERATING LOGIC
+
+() - groups logic, one at a time
+ex. (t | T)he matches the , The
+note: without the parenthesis, it would say to match
+either "t" or "The" looking like--> (t | The)
+
+//CARET symbol
+
+^ - match the beginning of the line, not word
+
+//$$$
+$ - matches the end of the line
+ex. (\.com) matches for the end of a email line
+
+//positive lookbehind
+
+(?<=) - captures what is after the submitted character(s)
+ex. (?<=eat). I wanted to eat glue. 
+captures the SPACE between "eat" and "glue"
+
+//negative lookahead
+
+(?=) - captures what is before the submitted character(s)
+ex. .(?=at) i wanted to eat glue.
+captures the "e" from eat
+
+(?!) - inverts it, captures everything that isnt before the
+submitted character(s)
+ex. .(?!at) would get everything in the previous example but "e"
