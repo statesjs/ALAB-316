@@ -7,6 +7,7 @@ let passCheck = document.getElementById("passwordCheck");
 let tnc = document.getElementById("checkbox");
 //
 formEl.addEventListener("submit", (e) => {
+  e.preventDefault();
   let messages = []; // to collect and push to errorbox
   const USER = usernameEl.value.trim(); //
   const EMAIL = emailEl.value.trim(); // email to string
@@ -74,11 +75,51 @@ formEl.addEventListener("submit", (e) => {
     messages.push("You must accept the Terms & Conditions.");
   }
 
+  //
+
+  let users = JSON.parse(localStorage.getItem("USERDATA")) || {};
+  console.log(users);
+  // Check if username already exists
+  if (users[0].hasOwnProperty(USER)) {
+    errorBox.innerHTML = "Username already exists.";
+    errorBox.style.color = "red";
+    errorBox.style.display = "block";
+    preventDefault;
+    return;
+  }
+  // check if username is already registered
+  for (let existingUser in users) {
+    if (users[existingUser].username === USER) {
+      errorBox.innerHTML = "Username already registered.";
+      errorBox.style.color = "red";
+      errorBox.style.display = "block";
+      return;
+    }
+  }
+
+  // check if email is already registered
+  for (let existingUser in users) {
+    if (users[existingUser].email === EMAIL) {
+      errorBox.innerHTML = "Email already registered.";
+      errorBox.style.color = "red";
+      errorBox.style.display = "block";
+      return;
+    }
+  }
+
+  // Store User Data in Local Storage
+  users[USER] = {
+    email: EMAIL,
+    pass: PASS,
+  };
+
+  localStorage.setItem("USERDATA", JSON.stringify(users));
   //error box display that fires if at least one error message caught
   if (messages.length > 0) {
     e.preventDefault();
     errorBox.innerHTML = messages.join("<br>"); // Show errors
-    errorBox.style.display = "flex"; // Display error box
+    errorBox.style.display = "block"; // Display error box
+    return;
   } else {
     errorBox.style.display = "none";
   }
