@@ -9,8 +9,8 @@ let tnc = document.getElementById("checkbox");
 formEl.addEventListener("submit", (e) => {
   e.preventDefault();
   let messages = []; // to collect and push to errorbox
-  const USER = usernameEl.value.trim(); //
-  const EMAIL = emailEl.value.trim(); // email to string
+  const USER = usernameEl.value.trim().toLowerCase(); //
+  const EMAIL = emailEl.value.trim().toLowerCase(); // email to string
   const PASS = pass.value.trim(); //password
   const PASSCHECK = passCheck.value.trim(); //password check
   //user name section
@@ -75,52 +75,38 @@ formEl.addEventListener("submit", (e) => {
     messages.push("You must accept the Terms & Conditions.");
   }
 
-  //
-
+  // temp variable to pull USERDATA from local storage into an object to compare from
   let users = JSON.parse(localStorage.getItem("USERDATA")) || {};
   console.log(users);
-  // Check if username already exists
-  if (users[0].hasOwnProperty(USER)) {
-    errorBox.innerHTML = "Username already exists.";
-    errorBox.style.color = "red";
-    errorBox.style.display = "block";
-    preventDefault;
-    return;
+  console.log(users.hasOwnProperty(USER));
+  // check if username already exists
+  if (users.hasOwnProperty(USER)) {
+    messages.push("Username already taken.");
   }
-  // check if username is already registered
-  for (let existingUser in users) {
-    if (users[existingUser].username === USER) {
-      errorBox.innerHTML = "Username already registered.";
-      errorBox.style.color = "red";
-      errorBox.style.display = "block";
-      return;
-    }
-  }
-
   // check if email is already registered
   for (let existingUser in users) {
     if (users[existingUser].email === EMAIL) {
-      errorBox.innerHTML = "Email already registered.";
-      errorBox.style.color = "red";
-      errorBox.style.display = "block";
-      return;
+      messages.push("Email already exists.");
+      break;
     }
   }
 
-  // Store User Data in Local Storage
-  users[USER] = {
-    email: EMAIL,
-    pass: PASS,
-  };
-
-  localStorage.setItem("USERDATA", JSON.stringify(users));
   //error box display that fires if at least one error message caught
   if (messages.length > 0) {
     e.preventDefault();
-    errorBox.innerHTML = messages.join("<br>"); // Show errors
-    errorBox.style.display = "block"; // Display error box
+    errorBox.innerHTML = messages.join("<br>"); // makes errors not crumpled up
+    errorBox.style.display = "block"; // change display from none
     return;
   } else {
     errorBox.style.display = "none";
+    // template for making the top level key the username, and the user info inside of it
+    users[USER] = {
+      email: EMAIL,
+      pass: PASS,
+    };
+
+    localStorage.setItem("USERDATA", JSON.stringify(users));
   }
 });
+
+//Part 4
