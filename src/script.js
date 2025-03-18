@@ -1,13 +1,17 @@
 let usernameEl = document.getElementById("username");
 let emailEl = document.getElementById("email");
 let pass = document.getElementById("password");
-let formEl = document.getElementById("registration");
+let regisFormEl = document.getElementById("registration");
 let errorBox = document.getElementById("errorDisplay");
 let passCheck = document.getElementById("passwordCheck");
 let tnc = document.getElementById("checkbox");
+//DATASET FOR USERS IN LOCAL
+
 //
-formEl.addEventListener("submit", (e) => {
+regisFormEl.addEventListener("submit", (e) => {
   e.preventDefault();
+  //needs to be in the function to be able to update
+  let users = JSON.parse(localStorage.getItem("USERDATA")) || {};
   let messages = []; // to collect and push to errorbox
   const USER = usernameEl.value.trim().toLowerCase(); //
   const EMAIL = emailEl.value.trim().toLowerCase(); // email to string
@@ -37,7 +41,7 @@ formEl.addEventListener("submit", (e) => {
       messages.push("Email is not a valid address");
     }
     // Ensure email is NOT from "example.com"
-    else if (EMAIL.toLowerCase().endsWith("@example.com")) {
+    else if (EMAIL.endsWith("@example.com")) {
       messages.push("Email contains example.com");
     }
   }
@@ -74,11 +78,6 @@ formEl.addEventListener("submit", (e) => {
   if (!tnc.checked) {
     messages.push("You must accept the Terms & Conditions.");
   }
-
-  // temp variable to pull USERDATA from local storage into an object to compare from
-  let users = JSON.parse(localStorage.getItem("USERDATA")) || {};
-  console.log(users);
-  console.log(users.hasOwnProperty(USER));
   // check if username already exists
   if (users.hasOwnProperty(USER)) {
     messages.push("Username already taken.");
@@ -93,12 +92,17 @@ formEl.addEventListener("submit", (e) => {
 
   //error box display that fires if at least one error message caught
   if (messages.length > 0) {
-    e.preventDefault();
+    errorBox.style.backgroundColor = "#fcc";
+    errorBox.style.color = "red";
     errorBox.innerHTML = messages.join("<br>"); // makes errors not crumpled up
     errorBox.style.display = "block"; // change display from none
     return;
   } else {
-    errorBox.style.display = "none";
+    regisFormEl.reset();
+    errorBox.style.display = "block";
+    errorBox.style.color = "green";
+    errorBox.style.backgroundColor = "greenyellow";
+    errorBox.innerHTML = "Success!";
     // template for making the top level key the username, and the user info inside of it
     users[USER] = {
       email: EMAIL,
@@ -110,3 +114,56 @@ formEl.addEventListener("submit", (e) => {
 });
 
 //Part 4
+
+let loginFormEl = document.getElementById("login");
+let loginUser = document.getElementById("loginUser");
+let loginPass = document.getElementById("loginPassword");
+let keepMe = document.getElementById("keepMe");
+
+//
+loginFormEl.addEventListener("submit", (e) => {
+  e.preventDefault();
+  let users = JSON.parse(localStorage.getItem("USERDATA")) || {};
+  let userLogin = loginUser.value.trim().toLowerCase();
+  let messages = [];
+
+  //login not empty
+  if (userLogin === "") {
+    messages.push("Login field is missing.");
+  } else {
+    //login username validation
+    if (!users.hasOwnProperty(userLogin)) {
+      messages.push("Username doesn't exist");
+    }
+  }
+  //login password validation
+  let userPass = loginPass.value.trim();
+  if (userPass === "") {
+    messages.push("Login password is missing.");
+    //username needs to be checked again, otherwise if its non-existant, itll throw an error instead of a false
+  } else if (
+    users.hasOwnProperty(userLogin) &&
+    users[userLogin].pass !== userPass
+  ) {
+    messages.push("Incorrect password.");
+  }
+
+  //error box
+  if (messages.length > 0) {
+    e.preventDefault();
+    errorBox.innerHTML = messages.join("<br>"); // makes errors not crumpled up
+    errorBox.style.display = "block"; // change display from none
+    return;
+  }
+
+  loginFormEl.reset();
+  messages.push("Success!");
+  errorBox.innerHTML = messages;
+  errorBox.style.display = "block";
+  errorBox.style.backgroundColor = "greenyellow";
+  errorBox.style.color = "green";
+  if (keepMe.checked) {
+    messages.push("We will keep you logged in.");
+    errorBox.innerHTML = messages.join("<br>");
+  }
+});

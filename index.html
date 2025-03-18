@@ -65,15 +65,25 @@
 
         <!-- Login Form -->
         <form id="login" style="border-bottom: 1px solid lightgray">
-          <input name="username" type="text" placeholder="Username" />
+          <input
+            name="username"
+            type="text"
+            placeholder="Username"
+            id="loginUser"
+          />
           <span class="input-icon"><i class="fa-solid fa-user"></i></span><br />
 
-          <input name="password" type="text" placeholder="Password" />
+          <input
+            name="password"
+            type="text"
+            placeholder="Password"
+            id="loginPassword"
+          />
           <span class="input-icon"><i class="fa-solid fa-key"></i></span
           ><br /><br />
 
           <div class="flex-row">
-            <input name="persist" type="checkbox" />
+            <input name="persist" type="checkbox" id="keepMe" />
             <label for="persist">Keep me logged in.</label>
             <input type="submit" value="Login" />
           </div>
